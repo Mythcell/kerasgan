@@ -63,7 +63,7 @@ You can optionally provide a seed, otherwise a random seed is created at the sta
 
 ![output_class_snapshot](https://user-images.githubusercontent.com/13238315/186831013-947228d6-670b-41ce-bc58-5ff9a33f104b.png)
 
-You can reverse these roles by passing `columns_indicate = 'examples'`.
+You can reverse these roles by passing `columns_indicate = 'examples'`, i.e. each row now shows a different class and each column shows a different example.
 
 ![output_class_snapshot_rowclass](https://user-images.githubusercontent.com/13238315/186831047-c2ac9206-fe7c-4a04-89ac-2d180997e376.png)
 
