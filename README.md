@@ -1,5 +1,4 @@
-# kerasgan
-Custom Keras models for training GANs and CGANs.
+# KerasGAN
 ***
 Training a GAN is as easy as one, two, three!
 ```python
