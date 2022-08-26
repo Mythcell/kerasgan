@@ -1,5 +1,7 @@
 # KerasGAN
+
 ***
+
 Training a GAN is as easy as one, two, three!
 ```python
 # 1. Instantiate
@@ -51,9 +53,19 @@ These callbacks are:
 `GANSnapshot`: Creates example figures after each epoch to visualise the generator's output.
 You can optionally provide a seed, otherwise a random seed is created at the start of training.
 
+![output_snapshot](https://user-images.githubusercontent.com/13238315/186830859-aad174a5-01c0-4f7a-af5a-5a2f05da04c5.png)
+
+
 `CGANSnapshot`: Same as `GANSnapshot` but utilises labels.
 
+
 `CGANClassSnapshot`: This callback will create rows of examples, with each column displaying a different class (i.e. label).
+
+![output_class_snapshot](https://user-images.githubusercontent.com/13238315/186831013-947228d6-670b-41ce-bc58-5ff9a33f104b.png)
+
 You can reverse these roles by passing `columns_indicate = 'examples'`.
+
+![output_class_snapshot_rowclass](https://user-images.githubusercontent.com/13238315/186831047-c2ac9206-fe7c-4a04-89ac-2d180997e376.png)
+
 
 `GANCheckpoint`: Periodically saves the generator and/or discriminator.
