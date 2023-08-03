@@ -16,7 +16,7 @@ Copyright (C) 2022 Mythcell
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Last updated: 03 Aug, 2023
+Last updated: 26 Aug, 2022
 """
 
 import tensorflow as tf
@@ -194,8 +194,9 @@ class GANSnapshot(keras.callbacks.Callback):
     """Generates images with a given seed at the end of every epoch"""
 
     def __init__(self, seed=None, num_images=32, freq=10, figscale=1, dpi=100,
-                 cmap='binary_r', save_snapshots=False, save_freq=10,
-                 save_dir='gan_snapshots', save_prefix='', epoch_fmt = '05d'):
+                 cmap='binary_r', show_snapshots=True, save_snapshots=False,
+                 save_freq=10, save_dir='gan_snapshots', save_prefix='',
+                 epoch_fmt = '05d'):
         """
         Generates images with the provided seed (or a random seed if no seed is
         provided). Intended to be used to help inspect and track the progress of
@@ -213,6 +214,8 @@ class GANSnapshot(keras.callbacks.Callback):
             figscale (float): Base figure scale multiplier. Defaults to 1.
             dpi (float): Base resolution. Defaults to 100.
             cmap (str): Colormap to use for mono images (is ignored for RGB images).
+            show_snapshots (bool): Whether to display the snapshots with plt.show.
+                Recommend setting to False if using a non-interactive workflow.
             save_snapshots (bool): Whether to save images to file. Defaults to False.
                 Images are saved as .png files and named by epoch.
             save_dir (str): Directory to save images to. Default is gan_snapshots.
@@ -228,6 +231,7 @@ class GANSnapshot(keras.callbacks.Callback):
         self.figscale = figscale
         self.dpi = dpi
         self.cmap = cmap
+        self.show_snapshots = show_snapshots
         self.save_snapshots = save_snapshots
         self.save_freq = save_freq
         self.save_dir = save_dir
@@ -249,11 +253,12 @@ class GANSnapshot(keras.callbacks.Callback):
 
         if epoch % self.freq != 0:
             return
+        if self.show_snapshots:
+            display.clear_output(wait=True)
 
         gen_im = self.model.generator.predict(self.seed, verbose=0)
         gen_im = np.uint8((gen_im + 1)*127.5)
         is_bw = gen_im.shape[-1] == 1
-        display.clear_output(wait=True)
 
         fig_height, fig_width = get_figure_dimensions(len(gen_im))
         fig = plt.figure(figsize=(self.figscale*fig_width,
@@ -267,7 +272,9 @@ class GANSnapshot(keras.callbacks.Callback):
             else:
                 plt.imshow(gim)
             plt.axis('off')
-        plt.show()
+        if self.show_snapshots:
+            plt.show()
+            
         if self.save_snapshots and epoch % self.save_freq == 0:
             fig.savefig(os.path.join(self.save_dir,f'{epoch:{self.epoch_fmt}}.png'),
                 format='png',facecolor='black',bbox_inches='tight')
@@ -279,7 +286,7 @@ class CGANSnapshot(keras.callbacks.Callback):
     """Generate images with the provided seed and labels."""
 
     def __init__(self, seed=None, labels=None, num_images=32, freq=10, figscale=1,
-                 dpi=100, cmap='binary_r', save_snapshots=False,
+                 dpi=100, cmap='binary_r', show_snapshots=True, save_snapshots=False,
                  save_dir='cgan_snapshots', save_freq=10, save_prefix='',
                  epoch_fmt='05d'):
         """
@@ -303,6 +310,8 @@ class CGANSnapshot(keras.callbacks.Callback):
             figscale (float): Base figure scale multiplier. Defaults to 1.
             dpi (float): Base resolution. Defaults to 100.
             cmap (str): Colormap to use for mono images (is ignored for RGB images).
+            show_snapshots (bool): Whether to display the snapshots with plt.show.
+                Recommend setting to False if using a non-interactive workflow.
             save_snapshots (bool): Whether to save images to file. Defaults to False.
                 Images are saved as .png files and named by epoch.
             save_dir (str): Directory to save images to. Default is cgan_snapshots
@@ -319,6 +328,7 @@ class CGANSnapshot(keras.callbacks.Callback):
         self.figscale = figscale
         self.dpi = dpi
         self.cmap = cmap
+        self.show_snapshots = show_snapshots
         self.save_snapshots = save_snapshots
         self.save_dir = save_dir
         self.save_freq = save_freq
@@ -353,11 +363,12 @@ class CGANSnapshot(keras.callbacks.Callback):
 
         if epoch % self.freq != 0:
             return
+        if self.show_snapshots:
+            display.clear_output(wait=True)
 
         gen_im = self.model.generator.predict([self.seed, self.labels],verbose=0)
         gen_im = np.uint8((gen_im + 1)*127.5) # convert to [0, 255]
         is_bw = gen_im.shape[-1] == 1
-        display.clear_output(wait=True)
 
         fig_height, fig_width = get_figure_dimensions(len(gen_im))
 
@@ -372,7 +383,8 @@ class CGANSnapshot(keras.callbacks.Callback):
             else:
                 plt.imshow(gim)
             plt.axis('off')
-        plt.show()
+        if self.show_snapshots:
+            plt.show()
 
         if self.save_snapshots and epoch % self.save_freq == 0:
             fig.savefig(os.path.join(
@@ -385,9 +397,9 @@ class CGANSnapshot(keras.callbacks.Callback):
 class CGANClassSnapshot(keras.callbacks.Callback):
 
     def __init__(self, seed=None, examples_per_class=3, columns_indicate='classes',
-                 freq=10, figscale=1, dpi=100, cmap='binary_r', save_snapshots=False,
-                 save_dir='cgan_class_snapshots', save_freq=10, save_prefix='',
-                 epoch_fmt='05d'):
+                 freq=10, figscale=1, dpi=100, cmap='binary_r', show_snapshots=True,
+                 save_snapshots=False, save_dir='cgan_class_snapshots', save_freq=10,
+                 save_prefix='',epoch_fmt='05d'):
         """
         Generates example images for every class, either with the provided seed
         or with a random seed (if not provided). By default, the figure will contain
@@ -410,6 +422,8 @@ class CGANClassSnapshot(keras.callbacks.Callback):
             figscale (float): Base figure scale multiplier. Defaults to 1.
             dpi (float): Base resolution. Defaults to 100.
             cmap (str): Colormap to use for mono images (is ignored for RGB images).
+            show_snapshots (bool): Whether to display the snapshots with plt.show.
+                Recommend setting to False if using a non-interactive workflow.
             save_snapshots (bool): Whether to save images to file. Defaults to False.
                 Images are saved as .png files and named by epoch.
             save_dir (str): Directory to save images to.
@@ -428,6 +442,7 @@ class CGANClassSnapshot(keras.callbacks.Callback):
         self.figscale = figscale
         self.dpi = dpi
         self.cmap = cmap
+        self.show_snapshots = show_snapshots
         self.save_snapshots = save_snapshots
         self.save_dir = save_dir
         self.save_freq = save_freq
@@ -461,11 +476,12 @@ class CGANClassSnapshot(keras.callbacks.Callback):
 
         if epoch % self.freq != 0:
             return
+        if self.show_snapshots:
+            display.clear_output(wait=True)
 
         gen_im = self.model.generator.predict([self.seed,self.labels],verbose=0)
         gen_im = np.uint8((gen_im + 1)*127.5)
         is_bw = gen_im.shape[-1] == 1
-        display.clear_output(wait=True)
 
         if self.columns_indicate == 'classes':
             fig_width, fig_height = self.model.num_classes, self.examples_per_class
@@ -483,7 +499,8 @@ class CGANClassSnapshot(keras.callbacks.Callback):
             else:
                 plt.imshow(gim)
             plt.axis('off')
-        plt.show()
+        if self.show_snapshots:
+            plt.show()
 
         if self.save_snapshots and epoch % self.save_freq == 0:
             fig.savefig(os.path.join(
