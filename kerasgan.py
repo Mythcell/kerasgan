@@ -196,7 +196,7 @@ class GANSnapshot(keras.callbacks.Callback):
     def __init__(self, seed=None, num_images=32, freq=10, figscale=1, dpi=100,
                  cmap='binary_r', show_snapshots=True, save_snapshots=False,
                  save_freq=10, save_dir='gan_snapshots', save_prefix='',
-                 epoch_fmt = '05d'):
+                 epoch_fmt='05d'):
         """
         Generates images with the provided seed (or a random seed if no seed is
         provided). Intended to be used to help inspect and track the progress of
@@ -514,7 +514,7 @@ class GANCheckpoint(keras.callbacks.Callback):
     """Periodically saves the generator and discriminator"""
 
     def __init__(self, save_dir='checkpoints', freq=20, verbose=False,
-                 save_generator=True, save_discriminator=True, epoch_fmt = '05d'):
+                 save_generator=True, save_discriminator=True, epoch_fmt='05d'):
         """
         Periodically saves the generator and discriminator as .h5 files.
 
