@@ -16,7 +16,7 @@ Copyright (C) 2022 Mythcell
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Last updated: 26 Aug, 2022
+Last updated: 03 Aug, 2023
 """
 
 import tensorflow as tf
